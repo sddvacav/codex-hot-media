@@ -1,6 +1,6 @@
 # codex-hot-media
 
-Codex-friendly CLI for turning public hot lists into original short-video plans and manual publish packs.
+Codex and Claude Code friendly CLI for turning public hot lists into original short-video plans and manual publish packs.
 
 It is designed for agent workflows: every command emits stable JSON, writes predictable files, and avoids platform login, cookies, account automation, payment links, and automatic publishing.
 
@@ -35,7 +35,15 @@ Then check:
 ```powershell
 codex-hot-media --json doctor
 codex-hot-media --json sources
+codex-hot-media --json agent-guide
 ```
+
+Agent integration files:
+
+- Codex skill: `.codex/skills/codex-hot-media/SKILL.md`
+- Claude Code memory: `CLAUDE.md`
+- Claude Code slash command: `.claude/commands/hot-media.md`
+- Shared guide: `AGENT_GUIDE.md`
 
 ## Quick Start
 
@@ -63,6 +71,7 @@ This creates:
 ```powershell
 codex-hot-media --json doctor
 codex-hot-media --json sources
+codex-hot-media --json agent-guide
 codex-hot-media --json collect --source bilibili --pages 3 --page-size 20 --out-dir outputs/data --prefix hot_items
 codex-hot-media --json plan --input outputs/data/hot_items_latest.json --top-n 10 --out-dir outputs
 codex-hot-media --json pack --plan outputs/video_plan_from_hot_latest.json --out-dir outputs

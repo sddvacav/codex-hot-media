@@ -23,6 +23,7 @@ jobs:
         run: |
           codex-hot-media --json doctor
           codex-hot-media --json sources
+          codex-hot-media --json agent-guide
       - name: Unit tests
         run: |
           python -m unittest discover -s tests -p "test_*.py"

@@ -26,6 +26,13 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "ok")
         self.assertFalse(payload["auth_required"])
 
+    def test_agent_guide(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            payload = run_cli("agent-guide", cwd=Path(temp_dir))
+        self.assertEqual(payload["status"], "ok")
+        self.assertIn("codex_skill", payload["agent_integrations"])
+        self.assertIn("claude_code_command", payload["agent_integrations"])
+
     def test_manual_import_plan_pack_dashboard(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             tmp_path = Path(temp_dir)

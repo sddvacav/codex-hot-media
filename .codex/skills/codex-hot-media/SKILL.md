@@ -14,6 +14,7 @@ Verify the command:
 ```powershell
 codex-hot-media --json doctor
 codex-hot-media --json sources
+codex-hot-media --json agent-guide
 ```
 
 Use `doctor` before any run. If it fails, inspect install state with:

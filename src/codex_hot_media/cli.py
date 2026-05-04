@@ -6,7 +6,6 @@ import datetime as dt
 import json
 import re
 import sys
-import textwrap
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -289,6 +288,25 @@ def parse_manual_text(text: str, source: str) -> list[HotItem]:
     items: list[HotItem] = []
     for line in text.splitlines():
         cleaned = re.sub(r"^\s*[\d#\-*.、)）\]]+\s*", "", line).strip()
+        cleaned = re.sub(r"\s+", " ", cleaned)
+        if len(cleaned) < 2:
+            continue
+        if cleaned.lower() in {"title", "hot", "rank", "榜单", "热榜"}:
+            continue
+        items.append(
+            HotItem(
+                source=source,
+                title=cleaned,
+                engagement_score=max(1, 100 - len(items)),
+            )
+        )
+    return items
+
+
+def parse_manual_text(text: str, source: str) -> list[HotItem]:
+    items: list[HotItem] = []
+    for line in text.splitlines():
+        cleaned = re.sub(r"^\s*(?:\d+|[#\-*.])[\s.、)）\]]*", "", line).strip()
         cleaned = re.sub(r"\s+", " ", cleaned)
         if len(cleaned) < 2:
             continue
@@ -718,13 +736,14 @@ def add_common_paths(parser: argparse.ArgumentParser) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="codex-hot-media",
-        description="Codex-friendly hot-list to original media planning CLI.",
+        description="Agent-friendly hot-list to original media planning CLI for Codex and Claude Code.",
     )
     parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON. Kept for CLI convention; JSON is always emitted for commands.")
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("doctor", help="Check local CLI setup and safe operating boundaries.")
     sub.add_parser("sources", help="List supported upstream/source patterns.")
+    sub.add_parser("agent-guide", help="Emit operating instructions for Codex and Claude Code agents.")
 
     collect = sub.add_parser("collect", help="Collect hot items from public or self-hosted sources.")
     collect.add_argument("--source", choices=["bilibili", "json-url", "dailyhot", "rss"], default="bilibili")
@@ -799,6 +818,50 @@ def command_sources(_: argparse.Namespace) -> dict[str, Any]:
             "DIYgod/RSSHub_head": "566f028aaf1813c9d05e491b9f6c67325a06e837",
             "SocialSisterYi/bilibili-API-collect_head": "4c00347d4f3494318903eeb11fb00d7b9c1f8c68",
             "tophubs/TopList_head": "44e550cf3a4bcfe2ec1adc668fa6adb8fd453f9c",
+        },
+    }
+
+
+def command_agent_guide(_: argparse.Namespace) -> dict[str, Any]:
+    return {
+        "status": "ok",
+        "action": "agent-guide",
+        "tool": "codex-hot-media",
+        "purpose": "Turn public/self-hosted hot-list inputs into original media plans and manual publish packs.",
+        "first_commands": [
+            "codex-hot-media --json doctor",
+            "codex-hot-media --json sources",
+        ],
+        "safe_workflows": {
+            "public_bilibili_run": "codex-hot-media --json run --source bilibili --pages 2 --page-size 20 --top-n 8 --out-dir outputs",
+            "manual_import": [
+                "codex-hot-media --json import-text --input examples/manual_hot_titles.txt --source-name manual --out-dir outputs/data --prefix manual_hot",
+                "codex-hot-media --json plan --input outputs/data/manual_hot_latest.json --top-n 5 --out-dir outputs",
+                "codex-hot-media --json pack --plan outputs/video_plan_from_hot_latest.json --out-dir outputs",
+            ],
+            "dailyhotapi": "codex-hot-media --json collect --source dailyhot --base-url http://127.0.0.1:6688 --route bilibili --out-dir outputs/data --prefix dailyhot_bilibili",
+            "rsshub": "codex-hot-media --json collect --source rss --base-url http://127.0.0.1:1200 --route bilibili/popular/all --out-dir outputs/data --prefix rsshub_bilibili",
+        },
+        "stable_outputs": [
+            "outputs/data/hot_items_latest.json",
+            "outputs/data/hot_items_latest.md",
+            "outputs/video_plan_from_hot_latest.json",
+            "outputs/video_plan_from_hot_latest.md",
+            "outputs/publish_pack/publish_pack_latest.json",
+            "outputs/publish_pack/publish_pack_latest.md",
+            "outputs/publish_pack/publish_log_template.csv",
+            "outputs/dashboard.html",
+        ],
+        "do_not_do": [
+            "Do not pass cookies, tokens, or account credentials.",
+            "Do not automate login, upload, or final publishing.",
+            "Do not copy source footage or exact creator titles.",
+            "Do not create payment links or manage accounts from this CLI.",
+        ],
+        "agent_integrations": {
+            "codex_skill": ".codex/skills/codex-hot-media/SKILL.md",
+            "claude_code_memory": "CLAUDE.md",
+            "claude_code_command": ".claude/commands/hot-media.md",
         },
     }
 
@@ -888,6 +951,8 @@ def main(argv: list[str] | None = None) -> None:
             result = command_doctor(args)
         elif args.command == "sources":
             result = command_sources(args)
+        elif args.command == "agent-guide":
+            result = command_agent_guide(args)
         elif args.command == "collect":
             result = command_collect(args)
         elif args.command == "import-text":
