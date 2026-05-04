@@ -12,12 +12,16 @@ Current-source pass on 2026-05-04:
 - `DIYgod/RSSHub` HEAD: `566f028aaf1813c9d05e491b9f6c67325a06e837`
 - `SocialSisterYi/bilibili-API-collect` HEAD: `4c00347d4f3494318903eeb11fb00d7b9c1f8c68`
 - `tophubs/TopList` HEAD: `44e550cf3a4bcfe2ec1adc668fa6adb8fd453f9c`
+- `ourongxing/newsnow` HEAD: `625bf04bc9ec13acd5554d241fa1683b0506027a`
+- `joyce677/TrendRadar` HEAD: `7b33d53f8233b4056c4e033178f70f135f2d156a`
+- `one-box-u/openclaw-daily-hot-news` HEAD: `93aa62ab874cfb8ccd6a5d662b40a0942b685027`
 
 Supported input patterns:
 
 - Bilibili public popular endpoint.
 - Self-hosted DailyHotApi JSON routes.
 - Self-hosted RSSHub RSS/Atom routes.
+- Self-hosted NewsNow / TrendRadar / OpenClaw daily hot news JSON exports.
 - Any generic JSON URL that returns hot-list-like items.
 - Any generic RSS/Atom URL.
 - Manual text imports from Douyin, TopHub, OceanEngine, Xiaohongshu, Weibo, or browser-copied lists.
@@ -103,6 +107,14 @@ Generic JSON/RSS:
 ```powershell
 codex-hot-media --json collect --source json-url --url https://example.com/hot.json --source-name custom --out-dir outputs/data --prefix custom_hot
 codex-hot-media --json collect --source rss --url https://example.com/feed.xml --source-name custom-rss --out-dir outputs/data --prefix custom_rss
+```
+
+NewsNow / TrendRadar / OpenClaw-style self-hosted JSON:
+
+```powershell
+codex-hot-media --json collect --source json-url --url http://127.0.0.1:3000/api/hot --source-name newsnow --out-dir outputs/data --prefix newsnow_hot
+codex-hot-media --json plan --input outputs/data/newsnow_hot_latest.json --top-n 10 --out-dir outputs
+codex-hot-media --json pack --plan outputs/video_plan_from_hot_latest.json --out-dir outputs
 ```
 
 ## JSON Contract

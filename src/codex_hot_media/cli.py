@@ -799,6 +799,9 @@ def command_sources(_: argparse.Namespace) -> dict[str, Any]:
             "DIYgod/RSSHub_head": "566f028aaf1813c9d05e491b9f6c67325a06e837",
             "SocialSisterYi/bilibili-API-collect_head": "4c00347d4f3494318903eeb11fb00d7b9c1f8c68",
             "tophubs/TopList_head": "44e550cf3a4bcfe2ec1adc668fa6adb8fd453f9c",
+            "ourongxing/newsnow_head": "625bf04bc9ec13acd5554d241fa1683b0506027a",
+            "joyce677/TrendRadar_head": "7b33d53f8233b4056c4e033178f70f135f2d156a",
+            "one-box-u/openclaw-daily-hot-news_head": "93aa62ab874cfb8ccd6a5d662b40a0942b685027",
         },
     }
 
@@ -822,6 +825,7 @@ def command_agent_guide(_: argparse.Namespace) -> dict[str, Any]:
             ],
             "dailyhotapi": "codex-hot-media --json collect --source dailyhot --base-url http://127.0.0.1:6688 --route bilibili --out-dir outputs/data --prefix dailyhot_bilibili",
             "rsshub": "codex-hot-media --json collect --source rss --base-url http://127.0.0.1:1200 --route bilibili/popular/all --out-dir outputs/data --prefix rsshub_bilibili",
+            "newsnow_or_trendradar_json": "codex-hot-media --json collect --source json-url --url http://127.0.0.1:3000/api/hot --source-name newsnow --out-dir outputs/data --prefix newsnow_hot",
         },
         "stable_outputs": [
             "outputs/data/hot_items_latest.json",
@@ -844,6 +848,15 @@ def command_agent_guide(_: argparse.Namespace) -> dict[str, Any]:
             "claude_code_memory": "CLAUDE.md",
             "claude_code_command": ".claude/commands/hot-media.md",
         },
+        "network_projects": [
+            "imsyy/DailyHotApi",
+            "DIYgod/RSSHub",
+            "SocialSisterYi/bilibili-API-collect",
+            "tophubs/TopList",
+            "ourongxing/newsnow",
+            "joyce677/TrendRadar",
+            "one-box-u/openclaw-daily-hot-news",
+        ],
     }
 
 

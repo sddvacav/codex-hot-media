@@ -21,6 +21,27 @@
     "notes": "Use a user-supplied RSSHub base URL and route, then parse RSS or Atom."
   },
   {
+    "id": "newsnow",
+    "kind": "self-hosted-json-or-rss",
+    "project": "ourongxing/newsnow",
+    "url": "https://github.com/ourongxing/newsnow",
+    "notes": "Deploy or use exported routes as JSON/RSS inputs through json-url or rss."
+  },
+  {
+    "id": "trendradar",
+    "kind": "self-hosted-json",
+    "project": "joyce677/TrendRadar",
+    "url": "https://github.com/joyce677/TrendRadar",
+    "notes": "Use for multi-platform trend monitoring; feed exported JSON into json-url or import-text."
+  },
+  {
+    "id": "openclaw-daily-hot-news",
+    "kind": "self-hosted-json",
+    "project": "one-box-u/openclaw-daily-hot-news",
+    "url": "https://github.com/one-box-u/openclaw-daily-hot-news",
+    "notes": "Use as another self-hosted daily hot news source through json-url or exported text."
+  },
+  {
     "id": "generic-json-url",
     "kind": "generic-json",
     "project": "any-json-api",

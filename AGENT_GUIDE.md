@@ -39,6 +39,9 @@ The tool is designed to compose with:
 - `imsyy/DailyHotApi` for self-hosted hot-list JSON routes,
 - `DIYgod/RSSHub` for self-hosted RSS/Atom routes,
 - `SocialSisterYi/bilibili-API-collect` as a reference for Bilibili public endpoints,
-- `tophubs/TopList` and browser-visible hot-list sites as manual import sources.
+- `tophubs/TopList` and browser-visible hot-list sites as manual import sources,
+- `ourongxing/newsnow` for self-hosted hot-list dashboards and exported routes,
+- `joyce677/TrendRadar` for multi-platform trend monitoring,
+- `one-box-u/openclaw-daily-hot-news` for self-hosted daily hot news JSON inputs.
 
 Use public/self-hosted sources as inputs. Transform them into original planning artifacts; do not copy source footage or exact creator titles.

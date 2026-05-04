@@ -32,6 +32,15 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "ok")
         self.assertIn("codex_skill", payload["agent_integrations"])
         self.assertIn("claude_code_command", payload["agent_integrations"])
+        self.assertIn("ourongxing/newsnow", payload["network_projects"])
+
+    def test_sources_include_network_projects(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            payload = run_cli("sources", cwd=Path(temp_dir))
+        projects = {item["project"] for item in payload["source_catalog"]}
+        self.assertIn("ourongxing/newsnow", projects)
+        self.assertIn("joyce677/TrendRadar", projects)
+        self.assertIn("one-box-u/openclaw-daily-hot-news", projects)
 
     def test_manual_import_plan_pack_dashboard(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
