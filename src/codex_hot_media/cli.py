@@ -287,25 +287,6 @@ def text_from_child(node: ET.Element, tag: str) -> str:
 def parse_manual_text(text: str, source: str) -> list[HotItem]:
     items: list[HotItem] = []
     for line in text.splitlines():
-        cleaned = re.sub(r"^\s*[\d#\-*.、)）\]]+\s*", "", line).strip()
-        cleaned = re.sub(r"\s+", " ", cleaned)
-        if len(cleaned) < 2:
-            continue
-        if cleaned.lower() in {"title", "hot", "rank", "榜单", "热榜"}:
-            continue
-        items.append(
-            HotItem(
-                source=source,
-                title=cleaned,
-                engagement_score=max(1, 100 - len(items)),
-            )
-        )
-    return items
-
-
-def parse_manual_text(text: str, source: str) -> list[HotItem]:
-    items: list[HotItem] = []
-    for line in text.splitlines():
         cleaned = re.sub(r"^\s*(?:\d+|[#\-*.])[\s.、)）\]]*", "", line).strip()
         cleaned = re.sub(r"\s+", " ", cleaned)
         if len(cleaned) < 2:
