@@ -13,6 +13,10 @@ codex-hot-media --json agent-guide
 
 The JSON output gives the safe command recipes, output paths, and forbidden actions.
 
+## GitHub Release Workflow
+
+Before publishing or tagging any GitHub project, follow `docs/GITHUB_RELEASE_IMAGE2_WORKFLOW.md`. Public releases should include Image2-built visual assets such as a social preview, README hero, workflow overview, or release card. If Image2 is unavailable, record that as a blocker instead of silently skipping the visual gate.
+
 ## Codex Integration
 
 Codex can use:

@@ -17,6 +17,8 @@ codex-hot-media --json sources
 codex-hot-media --json agent-guide
 ```
 
+For GitHub publishing or release work, read and follow `docs/GITHUB_RELEASE_IMAGE2_WORKFLOW.md`. Public releases should use Image2 visual assets before tagging or announcing the project.
+
 Use `doctor` before any run. If it fails, inspect install state with:
 
 ```powershell

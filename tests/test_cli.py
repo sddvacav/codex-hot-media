@@ -32,6 +32,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "ok")
         self.assertIn("codex_skill", payload["agent_integrations"])
         self.assertIn("claude_code_command", payload["agent_integrations"])
+        self.assertIn("github_release_image2_workflow", payload["agent_integrations"])
         self.assertIn("ourongxing/newsnow", payload["network_projects"])
         self.assertIn("ourongxing/newsnow-mcp-server", payload["network_projects"])
 

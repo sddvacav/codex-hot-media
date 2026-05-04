@@ -849,6 +849,7 @@ def command_agent_guide(_: argparse.Namespace) -> dict[str, Any]:
             "claude_code_memory": "CLAUDE.md",
             "claude_code_command": ".claude/commands/hot-media.md",
             "optional_mcp_notes": "docs/MCP_INTEGRATION.md",
+            "github_release_image2_workflow": "docs/GITHUB_RELEASE_IMAGE2_WORKFLOW.md",
         },
         "network_projects": [
             "imsyy/DailyHotApi",

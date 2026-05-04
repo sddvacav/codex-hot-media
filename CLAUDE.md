@@ -7,6 +7,14 @@ codex-hot-media --json doctor
 codex-hot-media --json agent-guide
 ```
 
+For GitHub publishing or release work, also follow:
+
+```text
+docs/GITHUB_RELEASE_IMAGE2_WORKFLOW.md
+```
+
+Do not publish a public project release as visually complete unless Image2 assets were planned, generated or intentionally carried forward, and referenced in the release workflow.
+
 ## Operating Boundary
 
 The tool only reads public or self-hosted hot-list inputs and writes local draft artifacts. Do not add account login, cookies, token handling, upload, auto-publishing, payment links, or account management.
