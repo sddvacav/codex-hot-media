@@ -30,9 +30,17 @@ Supported input patterns:
 
 ## Install
 
-From a clone:
+Directly from GitHub:
 
 ```powershell
+python -m pip install git+https://github.com/sddvacav/codex-hot-media.git
+```
+
+Or from a clone:
+
+```powershell
+git clone https://github.com/sddvacav/codex-hot-media.git
+cd codex-hot-media
 python -m pip install -e .
 ```
 
