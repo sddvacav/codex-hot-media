@@ -827,6 +827,12 @@ def command_agent_guide(_: argparse.Namespace) -> dict[str, Any]:
             "dailyhotapi": "codex-hot-media --json collect --source dailyhot --base-url http://127.0.0.1:6688 --route bilibili --out-dir outputs/data --prefix dailyhot_bilibili",
             "rsshub": "codex-hot-media --json collect --source rss --base-url http://127.0.0.1:1200 --route bilibili/popular/all --out-dir outputs/data --prefix rsshub_bilibili",
             "newsnow_or_trendradar_json": "codex-hot-media --json collect --source json-url --url http://127.0.0.1:3000/api/hot --source-name newsnow --out-dir outputs/data --prefix newsnow_hot",
+            "daily_5min_manual_sites": [
+                "Open https://newsnow.busiyi.world for multi-platform hotspots.",
+                "Open https://tophub.today/c/tech for GitHub Trending, Product Hunt, Hacker News, product and tech hotspots.",
+                "Open https://sopilot.net/zh/hot-tweets for viral X posts.",
+                "Paste selected titles into a text file, then run: codex-hot-media --json import-text --input examples/manual_hot_titles.txt --source-name daily-5min --out-dir outputs/data --prefix daily_5min",
+            ],
         },
         "stable_outputs": [
             "outputs/data/hot_items_latest.json",
@@ -849,7 +855,7 @@ def command_agent_guide(_: argparse.Namespace) -> dict[str, Any]:
             "claude_code_memory": "CLAUDE.md",
             "claude_code_command": ".claude/commands/hot-media.md",
             "optional_mcp_notes": "docs/MCP_INTEGRATION.md",
-            "github_release_image2_workflow": "docs/GITHUB_RELEASE_IMAGE2_WORKFLOW.md",
+            "github_project_image2_workflow": "docs/GITHUB_RELEASE_IMAGE2_WORKFLOW.md",
         },
         "network_projects": [
             "imsyy/DailyHotApi",
@@ -860,6 +866,9 @@ def command_agent_guide(_: argparse.Namespace) -> dict[str, Any]:
             "ourongxing/newsnow-mcp-server",
             "joyce677/TrendRadar",
             "one-box-u/openclaw-daily-hot-news",
+            "NewsNow public aggregator: https://newsnow.busiyi.world",
+            "TopHub Tech: https://tophub.today/c/tech",
+            "SoPilot Hot Tweets: https://sopilot.net/zh/hot-tweets",
         ],
     }
 

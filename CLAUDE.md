@@ -7,13 +7,13 @@ codex-hot-media --json doctor
 codex-hot-media --json agent-guide
 ```
 
-For GitHub publishing or release work, also follow:
+For GitHub project construction, publishing, or release work, also follow:
 
 ```text
 docs/GITHUB_RELEASE_IMAGE2_WORKFLOW.md
 ```
 
-Do not publish a public project release as visually complete unless Image2 assets were planned, generated or intentionally carried forward, and referenced in the release workflow.
+Do not write or publish public-facing project introduction material as complete unless Image2 assets were planned, generated or intentionally carried forward, and referenced in the project workflow. This applies to README, project pages, release pages, architecture docs, feature explanations, and meaning/value sections.
 
 ## Operating Boundary
 
@@ -48,6 +48,20 @@ DailyHotApi or RSSHub:
 ```bash
 codex-hot-media --json collect --source dailyhot --base-url http://127.0.0.1:6688 --route bilibili --out-dir outputs/data --prefix dailyhot_bilibili
 codex-hot-media --json collect --source rss --base-url http://127.0.0.1:1200 --route bilibili/popular/all --out-dir outputs/data --prefix rsshub_bilibili
+```
+
+Daily 5-minute manual sources:
+
+- NewsNow: `https://newsnow.busiyi.world`
+- TopHub Tech: `https://tophub.today/c/tech`
+- SoPilot hot tweets: `https://sopilot.net/zh/hot-tweets`
+
+Use browser-visible titles as manual input:
+
+```bash
+codex-hot-media --json import-text --input examples/manual_hot_titles.txt --source-name daily-5min --out-dir outputs/data --prefix daily_5min
+codex-hot-media --json plan --input outputs/data/daily_5min_latest.json --top-n 10 --out-dir outputs
+codex-hot-media --json pack --plan outputs/video_plan_from_hot_latest.json --out-dir outputs
 ```
 
 ## Verification

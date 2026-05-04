@@ -1,5 +1,5 @@
-AI工具省钱清单
-普通人如何用AI做第一个数字产品
-B站热门标题结构拆解
-短视频前5秒钩子模板
-自媒体账号诊断流程
+NewsNow: AI agent tools become a daily workflow topic
+TopHub Tech: GitHub Trending shows a new developer CLI pattern
+TopHub Tech: Hacker News discusses lightweight local-first tools
+SoPilot: Viral X thread about using AI to monitor public opinion
+SoPilot: Product builders debate manual review before automation

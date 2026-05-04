@@ -17,7 +17,7 @@ codex-hot-media --json sources
 codex-hot-media --json agent-guide
 ```
 
-For GitHub publishing or release work, read and follow `docs/GITHUB_RELEASE_IMAGE2_WORKFLOW.md`. Public releases should use Image2 visual assets before tagging or announcing the project.
+For GitHub project construction, publishing, or release work, read and follow `docs/GITHUB_RELEASE_IMAGE2_WORKFLOW.md`. README, project pages, release pages, architecture docs, feature explanations, and meaning/value sections should use Image2 visual assets before the project is considered release-ready.
 
 Use `doctor` before any run. If it fails, inspect install state with:
 
@@ -38,6 +38,20 @@ Manual import from copied hot titles:
 ```powershell
 codex-hot-media --json import-text --input examples/manual_hot_titles.txt --source-name manual --out-dir outputs/data --prefix manual_hot
 codex-hot-media --json plan --input outputs/data/manual_hot_latest.json --top-n 5 --out-dir outputs
+codex-hot-media --json pack --plan outputs/video_plan_from_hot_latest.json --out-dir outputs
+```
+
+Daily 5-minute manual hot workflow:
+
+1. Open `https://newsnow.busiyi.world`.
+2. Open `https://tophub.today/c/tech`.
+3. Open `https://sopilot.net/zh/hot-tweets`.
+4. Paste selected titles into a text file.
+5. Run:
+
+```powershell
+codex-hot-media --json import-text --input examples/manual_hot_titles.txt --source-name daily-5min --out-dir outputs/data --prefix daily_5min
+codex-hot-media --json plan --input outputs/data/daily_5min_latest.json --top-n 10 --out-dir outputs
 codex-hot-media --json pack --plan outputs/video_plan_from_hot_latest.json --out-dir outputs
 ```
 

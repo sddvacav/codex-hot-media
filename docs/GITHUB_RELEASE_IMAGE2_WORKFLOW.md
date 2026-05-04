@@ -1,46 +1,88 @@
-# GitHub Release Image2 Workflow
+# GitHub Project Image2 Construction Workflow
 
-All future GitHub project releases should use this workflow before the repository is announced or tagged. The goal is to make every published project visually complete, easy to recognize, and reusable by Codex and Claude Code.
+This is the required workflow for building and publishing GitHub projects. It is not only a final upload or release step. It applies before and during project construction whenever the project needs to explain what it is, why it matters, how it works, or how users and agents should use it.
 
-## Required Gate
+The standard is: world-class presentation, world-class taste, visual-first explanation, and agent-ready structure.
 
-Before a GitHub project is published or released:
+## Core Rule
 
-1. Generate or prepare Image2 visual assets for the project.
-2. Add the assets to the repository or release notes.
-3. Reference the assets from `README.md` when useful.
-4. Verify the README, agent guide, and release notes point to the same project story.
-5. Run tests and smoke checks.
-6. Publish to GitHub only after the visual and agent workflows are aligned.
+Any public-facing GitHub project must be built with an Image2 visual layer. If the project includes a README, launch page, release page, architecture explanation, workflow description, feature introduction, project meaning, or user-facing concept explanation, those materials need Image2-generated visuals unless there is a recorded blocker.
 
-## Image2 Asset Pack
+Do not treat images as decoration. Images are part of the explanation and acceptance standard.
 
-Use Image2 for these assets when the project has a public-facing release:
+## Where Image2 Is Required
 
-- repository social preview or hero image,
-- README workflow diagram or visual overview,
-- release card for social sharing,
-- icon/logo when the project needs a recognizable mark,
-- optional screenshot-style mockup showing how Codex or Claude Code uses the tool.
+Use Image2 when creating or revising:
 
-Recommended output folder:
+- repository social preview,
+- README hero section,
+- project launch or release page,
+- feature introduction sections,
+- architecture overview,
+- workflow explanation,
+- agent workflow explanation for Codex or Claude Code,
+- project meaning, positioning, or value proposition,
+- release card for GitHub releases or social sharing,
+- diagrams or visual metaphors that help users understand the project,
+- screenshot-style mockups showing expected usage.
+
+## Required Project Visual Pack
+
+Every serious GitHub project should have an Image2 asset pack:
 
 ```text
 assets/image2/
 ```
 
-Recommended filenames:
+Recommended minimum:
 
 ```text
 assets/image2/social-preview.png
 assets/image2/readme-hero.png
 assets/image2/workflow-overview.png
+assets/image2/architecture-overview.png
 assets/image2/release-card-v0.1.0.png
 ```
 
-## Prompt Contract
+For smaller tools, a reduced pack is allowed only if it still explains the project visually:
 
-Every generated asset should have a prompt record:
+```text
+assets/image2/readme-hero.png
+assets/image2/workflow-overview.png
+```
+
+## Required Publishing Page
+
+When a project needs a web page, launch page, or release page, create a project publishing page that includes:
+
+- a first-viewport project identity visual,
+- concise project positioning,
+- what the tool does,
+- why it matters,
+- how Codex uses it,
+- how Claude Code uses it,
+- supported network projects or ecosystem integrations,
+- safety boundaries,
+- install and verification commands,
+- release status.
+
+The page should not be a generic landing page. It should be a functional project presentation page that helps users understand and adopt the tool quickly.
+
+Recommended path:
+
+```text
+docs/site/index.html
+```
+
+or, for GitHub Pages:
+
+```text
+docs/index.html
+```
+
+## Prompt Record Contract
+
+Every Image2 asset must have a prompt record:
 
 ```text
 assets/image2/prompts/
@@ -49,39 +91,61 @@ assets/image2/prompts/
 Example:
 
 ```text
-assets/image2/prompts/social-preview.md
+assets/image2/prompts/readme-hero.md
 ```
 
-Prompt records should include:
+Each prompt record should include:
 
 - project name,
 - intended asset,
+- target page or document,
 - prompt,
 - size and quality,
 - date,
 - manual review notes,
-- whether text in the image was checked for legibility.
+- whether image text was checked for legibility,
+- whether the image accurately explains the project.
+
+## README Requirements
+
+README construction should be visual-first:
+
+1. Project name and one-sentence positioning.
+2. Image2 hero or workflow visual.
+3. What the project does.
+4. Why it matters.
+5. How the tool works.
+6. Codex usage.
+7. Claude Code usage.
+8. Supported network projects.
+9. Safety boundary.
+10. Install and verification commands.
+
+If README lacks a relevant Image2 visual and there is no recorded blocker, it does not meet the publishing standard.
+
+## Architecture Requirements
+
+Architecture explanations should include an Image2 visual or a generated diagram asset. For agent tools, the visual should show:
+
+- input sources,
+- core CLI or service,
+- Codex entry,
+- Claude Code entry,
+- optional MCP entry,
+- generated outputs,
+- safety boundary.
 
 ## Agent Workflow
 
-Codex and Claude Code should both follow this order:
+Codex and Claude Code should both follow this order for GitHub project construction:
 
-1. Run project checks:
-
-```bash
-codex-hot-media --json doctor
-codex-hot-media --json agent-guide
-```
-
-2. Inspect or create the Image2 asset plan:
-
-```text
-assets/image2/prompts/*.md
-```
-
-3. Generate or update required assets with Image2.
-4. Update `README.md`, `AGENT_GUIDE.md`, and release notes to reference the assets.
-5. Run verification:
+1. Read this workflow.
+2. Define the project story: what it is, why it matters, who uses it.
+3. Define the Image2 asset pack.
+4. Generate or update Image2 visuals.
+5. Record prompts.
+6. Build README, project page, architecture docs, and release notes around those visuals.
+7. Run verification:
 
 ```bash
 python -m unittest discover -s tests -p "test_*.py"
@@ -89,10 +153,23 @@ codex-hot-media --json doctor
 codex-hot-media --json agent-guide
 ```
 
-6. Publish or tag the GitHub release.
+8. Publish or tag only after the visual layer and agent workflow are aligned.
+
+## Acceptance Standard
+
+A GitHub project is release-ready only when:
+
+- it has a clear project story,
+- it has Image2 visual assets or a recorded Image2 blocker,
+- README and project page use those assets meaningfully,
+- architecture and workflow are visually explainable,
+- Codex and Claude Code paths are documented,
+- install and verification commands work,
+- safety boundaries are visible,
+- CI passes.
 
 ## Safety Boundary
 
-Do not use non-Image2 image models by default for project publishing assets. Do not use account cookies, platform login automation, upload automation, or payment links as part of this release workflow.
+Do not use non-Image2 image models by default for project publishing assets. Do not use account cookies, platform login automation, upload automation, payment links, or final publishing automation as part of this workflow.
 
-If Image2 is unavailable in the current environment, record the blocker in release notes and do not claim the project has completed the Image2 release gate.
+If Image2 is unavailable in the current environment, record the blocker in project docs and do not claim the project has met the Image2 publishing standard.

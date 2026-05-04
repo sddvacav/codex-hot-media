@@ -26,7 +26,7 @@ Supported input patterns:
 - Optional NewsNow MCP input for Claude Code or other MCP-capable clients.
 - Any generic JSON URL that returns hot-list-like items.
 - Any generic RSS/Atom URL.
-- Manual text imports from Douyin, TopHub, OceanEngine, Xiaohongshu, Weibo, or browser-copied lists.
+- Manual text imports from NewsNow, TopHub Tech, SoPilot, Douyin, OceanEngine, Xiaohongshu, Weibo, or browser-copied lists.
 
 ## Install
 
@@ -97,6 +97,20 @@ Manual import:
 ```powershell
 codex-hot-media --json import-text --input examples/manual_hot_titles.txt --source-name manual --out-dir outputs/data --prefix manual_hot
 codex-hot-media --json plan --input outputs/data/manual_hot_latest.json --top-n 5 --out-dir outputs
+codex-hot-media --json pack --plan outputs/video_plan_from_hot_latest.json --out-dir outputs
+```
+
+Daily 5-minute manual hot sites:
+
+- NewsNow: https://newsnow.busiyi.world
+- TopHub Tech: https://tophub.today/c/tech
+- SoPilot hot tweets: https://sopilot.net/zh/hot-tweets
+
+Recommended daily flow:
+
+```powershell
+codex-hot-media --json import-text --input examples/manual_hot_titles.txt --source-name daily-5min --out-dir outputs/data --prefix daily_5min
+codex-hot-media --json plan --input outputs/data/daily_5min_latest.json --top-n 10 --out-dir outputs
 codex-hot-media --json pack --plan outputs/video_plan_from_hot_latest.json --out-dir outputs
 ```
 

@@ -32,9 +32,10 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["status"], "ok")
         self.assertIn("codex_skill", payload["agent_integrations"])
         self.assertIn("claude_code_command", payload["agent_integrations"])
-        self.assertIn("github_release_image2_workflow", payload["agent_integrations"])
+        self.assertIn("github_project_image2_workflow", payload["agent_integrations"])
         self.assertIn("ourongxing/newsnow", payload["network_projects"])
         self.assertIn("ourongxing/newsnow-mcp-server", payload["network_projects"])
+        self.assertIn("TopHub Tech: https://tophub.today/c/tech", payload["network_projects"])
 
     def test_sources_include_network_projects(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -44,6 +45,9 @@ class CliTests(unittest.TestCase):
         self.assertIn("ourongxing/newsnow-mcp-server", projects)
         self.assertIn("joyce677/TrendRadar", projects)
         self.assertIn("one-box-u/openclaw-daily-hot-news", projects)
+        self.assertIn("NewsNow public aggregator", projects)
+        self.assertIn("TopHub Tech", projects)
+        self.assertIn("SoPilot Hot Tweets", projects)
 
     def test_manual_import_plan_pack_dashboard(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

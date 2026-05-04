@@ -45,4 +45,20 @@ codex-hot-media --json collect --source dailyhot --base-url http://127.0.0.1:668
 codex-hot-media --json collect --source rss --base-url http://127.0.0.1:1200 --route bilibili/popular/all --out-dir outputs/data --prefix rsshub_bilibili
 ```
 
+- For the daily 5-minute manual workflow, open:
+
+```text
+https://newsnow.busiyi.world
+https://tophub.today/c/tech
+https://sopilot.net/zh/hot-tweets
+```
+
+Paste selected titles into a text file, then run:
+
+```bash
+codex-hot-media --json import-text --input examples/manual_hot_titles.txt --source-name daily-5min --out-dir outputs/data --prefix daily_5min
+codex-hot-media --json plan --input outputs/data/daily_5min_latest.json --top-n 10 --out-dir outputs
+codex-hot-media --json pack --plan outputs/video_plan_from_hot_latest.json --out-dir outputs
+```
+
 Never add cookies, account tokens, login automation, upload automation, payment links, or final publishing steps. Keep all outputs local drafts for manual review.
