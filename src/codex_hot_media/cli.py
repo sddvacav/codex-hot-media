@@ -800,6 +800,7 @@ def command_sources(_: argparse.Namespace) -> dict[str, Any]:
             "SocialSisterYi/bilibili-API-collect_head": "4c00347d4f3494318903eeb11fb00d7b9c1f8c68",
             "tophubs/TopList_head": "44e550cf3a4bcfe2ec1adc668fa6adb8fd453f9c",
             "ourongxing/newsnow_head": "625bf04bc9ec13acd5554d241fa1683b0506027a",
+            "ourongxing/newsnow-mcp-server_head": "7abcdeb90bddf5d03818c9a81ab7169d1aa7f2c1",
             "joyce677/TrendRadar_head": "7b33d53f8233b4056c4e033178f70f135f2d156a",
             "one-box-u/openclaw-daily-hot-news_head": "93aa62ab874cfb8ccd6a5d662b40a0942b685027",
         },
@@ -847,6 +848,7 @@ def command_agent_guide(_: argparse.Namespace) -> dict[str, Any]:
             "codex_skill": ".codex/skills/codex-hot-media/SKILL.md",
             "claude_code_memory": "CLAUDE.md",
             "claude_code_command": ".claude/commands/hot-media.md",
+            "optional_mcp_notes": "docs/MCP_INTEGRATION.md",
         },
         "network_projects": [
             "imsyy/DailyHotApi",
@@ -854,6 +856,7 @@ def command_agent_guide(_: argparse.Namespace) -> dict[str, Any]:
             "SocialSisterYi/bilibili-API-collect",
             "tophubs/TopList",
             "ourongxing/newsnow",
+            "ourongxing/newsnow-mcp-server",
             "joyce677/TrendRadar",
             "one-box-u/openclaw-daily-hot-news",
         ],

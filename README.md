@@ -13,6 +13,7 @@ Current-source pass on 2026-05-04:
 - `SocialSisterYi/bilibili-API-collect` HEAD: `4c00347d4f3494318903eeb11fb00d7b9c1f8c68`
 - `tophubs/TopList` HEAD: `44e550cf3a4bcfe2ec1adc668fa6adb8fd453f9c`
 - `ourongxing/newsnow` HEAD: `625bf04bc9ec13acd5554d241fa1683b0506027a`
+- `ourongxing/newsnow-mcp-server` HEAD: `7abcdeb90bddf5d03818c9a81ab7169d1aa7f2c1`
 - `joyce677/TrendRadar` HEAD: `7b33d53f8233b4056c4e033178f70f135f2d156a`
 - `one-box-u/openclaw-daily-hot-news` HEAD: `93aa62ab874cfb8ccd6a5d662b40a0942b685027`
 
@@ -22,6 +23,7 @@ Supported input patterns:
 - Self-hosted DailyHotApi JSON routes.
 - Self-hosted RSSHub RSS/Atom routes.
 - Self-hosted NewsNow / TrendRadar / OpenClaw daily hot news JSON exports.
+- Optional NewsNow MCP input for Claude Code or other MCP-capable clients.
 - Any generic JSON URL that returns hot-list-like items.
 - Any generic RSS/Atom URL.
 - Manual text imports from Douyin, TopHub, OceanEngine, Xiaohongshu, Weibo, or browser-copied lists.

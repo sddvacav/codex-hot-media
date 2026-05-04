@@ -28,6 +28,13 @@
     "notes": "Deploy or use exported routes as JSON/RSS inputs through json-url or rss."
   },
   {
+    "id": "newsnow-mcp",
+    "kind": "optional-mcp",
+    "project": "ourongxing/newsnow-mcp-server",
+    "url": "https://github.com/ourongxing/newsnow-mcp-server",
+    "notes": "Optional MCP input for Claude Code or other MCP-capable agents. Keep this CLI as the normalization and planning layer."
+  },
+  {
     "id": "trendradar",
     "kind": "self-hosted-json",
     "project": "joyce677/TrendRadar",

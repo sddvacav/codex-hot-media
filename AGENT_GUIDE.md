@@ -41,7 +41,10 @@ The tool is designed to compose with:
 - `SocialSisterYi/bilibili-API-collect` as a reference for Bilibili public endpoints,
 - `tophubs/TopList` and browser-visible hot-list sites as manual import sources,
 - `ourongxing/newsnow` for self-hosted hot-list dashboards and exported routes,
+- `ourongxing/newsnow-mcp-server` as an optional MCP input for Claude Code or other MCP-capable clients,
 - `joyce677/TrendRadar` for multi-platform trend monitoring,
 - `one-box-u/openclaw-daily-hot-news` for self-hosted daily hot news JSON inputs.
+
+See `docs/MCP_INTEGRATION.md` for the optional MCP path.
 
 Use public/self-hosted sources as inputs. Transform them into original planning artifacts; do not copy source footage or exact creator titles.
