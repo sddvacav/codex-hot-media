@@ -1,11 +1,11 @@
 # Runtime outputs
 data/
 outputs/
-dashboard_today.html
-publish_queue.html
-publish_pack.html
-hot_workbench.html
-index.html
+/dashboard_today.html
+/publish_queue.html
+/publish_pack.html
+/hot_workbench.html
+/index.html
 tmp_*/
 
 # Python

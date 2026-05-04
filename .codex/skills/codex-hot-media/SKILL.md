@@ -15,6 +15,7 @@ Verify the command:
 codex-hot-media --json doctor
 codex-hot-media --json sources
 codex-hot-media --json agent-guide
+codex-hot-media --json image2-gate
 ```
 
 For GitHub project construction, publishing, or release work, read and follow `docs/GITHUB_RELEASE_IMAGE2_WORKFLOW.md`. README, project pages, release pages, architecture docs, feature explanations, and meaning/value sections should use Image2 visual assets before the project is considered release-ready.

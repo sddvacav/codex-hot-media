@@ -59,6 +59,12 @@ Agent integration files:
 - Claude Code slash command: `.claude/commands/hot-media.md`
 - Shared guide: `AGENT_GUIDE.md`
 
+Project publishing page:
+
+- `docs/site/index.html`
+- Image2 construction workflow: `docs/GITHUB_RELEASE_IMAGE2_WORKFLOW.md`
+- Image2 prompt records: `assets/image2/prompts/`
+
 ## Quick Start
 
 Run the default public Bilibili pipeline:
@@ -86,6 +92,7 @@ This creates:
 codex-hot-media --json doctor
 codex-hot-media --json sources
 codex-hot-media --json agent-guide
+codex-hot-media --json image2-gate
 codex-hot-media --json collect --source bilibili --pages 3 --page-size 20 --out-dir outputs/data --prefix hot_items
 codex-hot-media --json plan --input outputs/data/hot_items_latest.json --top-n 10 --out-dir outputs
 codex-hot-media --json pack --plan outputs/video_plan_from_hot_latest.json --out-dir outputs

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>codex-hot-media</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --ink: #17202a;
+      --muted: #64748b;
+      --line: #d9e0ea;
+      --blue: #2563eb;
+      --green: #0f9f6e;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--ink); }
+    header { padding: 28px 22px 18px; background: var(--panel); border-bottom: 1px solid var(--line); }
+    main { max-width: 1120px; margin: 0 auto; padding: 18px; display: grid; gap: 18px; }
+    h1 { margin: 0 0 8px; font-size: 34px; letter-spacing: 0; }
+    h2 { margin: 0 0 12px; font-size: 19px; letter-spacing: 0; }
+    p { color: var(--muted); line-height: 1.65; margin: 0; }
+    code { background: #eef4ff; color: #1d4ed8; padding: 2px 5px; border-radius: 5px; }
+    .hero { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 18px; align-items: center; }
+    .hero-visual, section { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; }
+    .hero-visual img { width: 100%; border-radius: 8px; border: 1px solid var(--line); background: #f1f5f9; }
+    .placeholder { min-height: 280px; display: grid; place-items: center; text-align: center; color: var(--muted); background: #f1f5f9; border: 1px dashed #9aa8bd; border-radius: 8px; padding: 20px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .card { border: 1px solid var(--line); border-radius: 8px; padding: 14px; background: #fbfcfe; }
+    .card strong { display: block; margin-bottom: 7px; }
+    .commands { background: #111827; color: #dbeafe; border-radius: 8px; padding: 14px; overflow-x: auto; font-family: Consolas, monospace; font-size: 13px; line-height: 1.7; }
+    .tag { display: inline-block; background: #edf7f3; color: var(--green); border-radius: 999px; padding: 5px 9px; font-size: 12px; font-weight: 800; margin: 0 6px 6px 0; }
+    @media (max-width: 820px) { .hero, .grid { grid-template-columns: 1fr; } h1 { font-size: 28px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div style="max-width:1120px;margin:0 auto;">
+      <h1>codex-hot-media</h1>
+      <p>Agent-friendly hot-list to original media planning CLI for Codex and Claude Code.</p>
+    </div>
+  </header>
+  <main>
+    <div class="hero">
+      <section>
+        <h2>What It Means</h2>
+        <p>codex-hot-media turns public and self-hosted hot-list signals into local planning artifacts: JSON reports, video plans, manual publish packs, CSV review logs, and dashboards. It keeps account login, upload, and final publishing manual.</p>
+      </section>
+      <div class="hero-visual">
+        <div class="placeholder">
+          Generate <code>assets/image2/readme-hero.png</code> with Image2 before claiming the Image2 project gate is complete.
+        </div>
+      </div>
+    </div>
+    <section>
+      <h2>Agent Paths</h2>
+      <div class="grid">
+        <div class="card"><strong>Codex</strong><p>Uses the repository skill and <code>codex-hot-media --json agent-guide</code>.</p></div>
+        <div class="card"><strong>Claude Code</strong><p>Uses <code>CLAUDE.md</code> and <code>.claude/commands/hot-media.md</code>.</p></div>
+        <div class="card"><strong>Optional MCP</strong><p>NewsNow MCP can feed inputs, while the CLI remains the normalization and planning layer.</p></div>
+      </div>
+    </section>
+    <section>
+      <h2>Network Sources</h2>
+      <span class="tag">Bilibili</span>
+      <span class="tag">DailyHotApi</span>
+      <span class="tag">RSSHub</span>
+      <span class="tag">NewsNow</span>
+      <span class="tag">TopHub Tech</span>
+      <span class="tag">SoPilot</span>
+      <span class="tag">TrendRadar</span>
+      <span class="tag">OpenClaw</span>
+    </section>
+    <section>
+      <h2>Install And Verify</h2>
+      <div class="commands">python -m pip install git+https://github.com/sddvacav/codex-hot-media.git
+codex-hot-media --json doctor
+codex-hot-media --json agent-guide
+codex-hot-media --json image2-gate</div>
+    </section>
+    <section>
+      <h2>Image2 Gate</h2>
+      <p>This page is part of the GitHub project construction workflow. The project is not visually release-ready until Image2 assets exist under <code>assets/image2/</code> and their prompts are recorded under <code>assets/image2/prompts/</code>.</p>
+    </section>
+  </main>
+</body>
+</html>

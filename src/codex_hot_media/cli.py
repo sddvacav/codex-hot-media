@@ -725,6 +725,8 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("doctor", help="Check local CLI setup and safe operating boundaries.")
     sub.add_parser("sources", help="List supported upstream/source patterns.")
     sub.add_parser("agent-guide", help="Emit operating instructions for Codex and Claude Code agents.")
+    image2_gate = sub.add_parser("image2-gate", help="Check the Image2-first GitHub project construction gate.")
+    image2_gate.add_argument("--project-root", default=".", help="Repository root to inspect.")
 
     collect = sub.add_parser("collect", help="Collect hot items from public or self-hosted sources.")
     collect.add_argument("--source", choices=["bilibili", "json-url", "dailyhot", "rss"], default="bilibili")
@@ -950,6 +952,62 @@ def command_run(args: argparse.Namespace) -> dict[str, Any]:
     }
 
 
+def command_image2_gate(args: argparse.Namespace) -> dict[str, Any]:
+    root = Path(args.project_root)
+    required_docs = [
+        root / "README.md",
+        root / "AGENT_GUIDE.md",
+        root / "docs" / "GITHUB_RELEASE_IMAGE2_WORKFLOW.md",
+    ]
+    prompt_dir = root / "assets" / "image2" / "prompts"
+    image_dir = root / "assets" / "image2"
+    prompt_files = sorted(prompt_dir.glob("*.md")) if prompt_dir.exists() else []
+    image_files = [
+        path
+        for pattern in ("*.png", "*.jpg", "*.jpeg", "*.webp")
+        for path in image_dir.glob(pattern)
+    ] if image_dir.exists() else []
+    page_candidates = [
+        root / "docs" / "site" / "index.html",
+        root / "docs" / "index.html",
+    ]
+
+    checks = {
+        "required_docs": [
+            {"path": str(path), "exists": path.exists()} for path in required_docs
+        ],
+        "prompt_records": [
+            {"path": str(path), "exists": True} for path in prompt_files
+        ],
+        "image_assets": [
+            {"path": str(path), "exists": True} for path in image_files
+        ],
+        "project_pages": [
+            {"path": str(path), "exists": path.exists()} for path in page_candidates
+        ],
+    }
+
+    missing_docs = [str(path) for path in required_docs if not path.exists()]
+    blockers = []
+    if missing_docs:
+        blockers.append("Missing required project/release documentation.")
+    if not prompt_files:
+        blockers.append("Missing Image2 prompt records in assets/image2/prompts/.")
+    if not image_files:
+        blockers.append("Missing generated Image2 image assets in assets/image2/.")
+    if not any(path.exists() for path in page_candidates):
+        blockers.append("Missing project publishing page at docs/site/index.html or docs/index.html.")
+
+    return {
+        "status": "ok" if not blockers else "blocked",
+        "action": "image2-gate",
+        "project_root": str(root.resolve()),
+        "checks": checks,
+        "blockers": blockers,
+        "required_standard": "GitHub project construction is not release-ready unless README, publishing page, feature/architecture explanation, Image2 prompt records, and Image2 visual assets are aligned.",
+    }
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -960,6 +1018,8 @@ def main(argv: list[str] | None = None) -> None:
             result = command_sources(args)
         elif args.command == "agent-guide":
             result = command_agent_guide(args)
+        elif args.command == "image2-gate":
+            result = command_image2_gate(args)
         elif args.command == "collect":
             result = command_collect(args)
         elif args.command == "import-text":

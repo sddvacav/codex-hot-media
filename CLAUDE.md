@@ -5,6 +5,7 @@ This repository is an agent-facing CLI for Codex and Claude Code. Use the Python
 ```bash
 codex-hot-media --json doctor
 codex-hot-media --json agent-guide
+codex-hot-media --json image2-gate
 ```
 
 For GitHub project construction, publishing, or release work, also follow:

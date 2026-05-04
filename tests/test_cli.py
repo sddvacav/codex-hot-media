@@ -49,6 +49,19 @@ class CliTests(unittest.TestCase):
         self.assertIn("TopHub Tech", projects)
         self.assertIn("SoPilot Hot Tweets", projects)
 
+    def test_image2_gate_reports_blockers_without_images(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tmp_path = Path(temp_dir)
+            (tmp_path / "docs").mkdir()
+            (tmp_path / "assets" / "image2" / "prompts").mkdir(parents=True)
+            (tmp_path / "README.md").write_text("# Test\n", encoding="utf-8")
+            (tmp_path / "AGENT_GUIDE.md").write_text("# Guide\n", encoding="utf-8")
+            (tmp_path / "docs" / "GITHUB_RELEASE_IMAGE2_WORKFLOW.md").write_text("# Workflow\n", encoding="utf-8")
+            (tmp_path / "assets" / "image2" / "prompts" / "hero.md").write_text("prompt", encoding="utf-8")
+            payload = run_cli("image2-gate", "--project-root", str(tmp_path), cwd=tmp_path)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertTrue(any("Missing generated Image2" in blocker for blocker in payload["blockers"]))
+
     def test_manual_import_plan_pack_dashboard(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             tmp_path = Path(temp_dir)

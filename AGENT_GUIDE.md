@@ -13,6 +13,12 @@ codex-hot-media --json agent-guide
 
 The JSON output gives the safe command recipes, output paths, and forbidden actions.
 
+For GitHub project construction checks, also run:
+
+```bash
+codex-hot-media --json image2-gate
+```
+
 ## GitHub Project Construction Workflow
 
 Before and during GitHub project construction, follow `docs/GITHUB_RELEASE_IMAGE2_WORKFLOW.md`. This is not only a final release step. Any README, project page, feature introduction, architecture explanation, workflow explanation, or project meaning/value section should be built with Image2 visual assets. If Image2 is unavailable, record that as a blocker instead of silently skipping the visual gate.
