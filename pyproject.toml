@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "codex-hot-media"
+version = "0.1.0"
+description = "Codex-friendly CLI for turning public hot lists into original short-video plans and manual publish packs."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "codex-hot-media contributors" }
+]
+keywords = ["codex", "ai-media", "hot-list", "rsshub", "bilibili", "dailyhotapi"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Text Processing"
+]
+dependencies = []
+
+[project.scripts]
+codex-hot-media = "codex_hot_media.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+codex_hot_media = ["source_catalog.json"]

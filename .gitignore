@@ -1,0 +1,32 @@
+# Runtime outputs
+data/
+outputs/
+dashboard_today.html
+publish_queue.html
+publish_pack.html
+hot_workbench.html
+index.html
+tmp_*/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+dist/
+build/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local secrets/config
+.env
+*.local.json
+*.token

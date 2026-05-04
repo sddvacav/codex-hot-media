@@ -1,0 +1,44 @@
+[
+  {
+    "id": "bilibili-popular",
+    "kind": "direct-json",
+    "project": "SocialSisterYi/bilibili-API-collect",
+    "url": "https://api.bilibili.com/x/web-interface/popular",
+    "notes": "Public web popular endpoint. Use low volume and no account cookies."
+  },
+  {
+    "id": "dailyhotapi",
+    "kind": "self-hosted-json",
+    "project": "imsyy/DailyHotApi",
+    "url": "https://github.com/imsyy/DailyHotApi",
+    "notes": "Use a user-supplied base URL and route. Do not assume a hosted public instance."
+  },
+  {
+    "id": "rsshub",
+    "kind": "self-hosted-rss",
+    "project": "DIYgod/RSSHub",
+    "url": "https://github.com/DIYgod/RSSHub",
+    "notes": "Use a user-supplied RSSHub base URL and route, then parse RSS or Atom."
+  },
+  {
+    "id": "generic-json-url",
+    "kind": "generic-json",
+    "project": "any-json-api",
+    "url": "",
+    "notes": "Use for self-hosted hot-list APIs or exports compatible with JSON."
+  },
+  {
+    "id": "generic-rss-url",
+    "kind": "generic-rss",
+    "project": "any-rss-feed",
+    "url": "",
+    "notes": "Use for RSSHub routes, custom feeds, and other public RSS/Atom feeds."
+  },
+  {
+    "id": "manual-text",
+    "kind": "manual-import",
+    "project": "Douyin, TopHub, OceanEngine, Xiaohongshu, Weibo",
+    "url": "",
+    "notes": "Paste visible hot titles or exported text. This tool does not automate login, scraping, or publishing."
+  }
+]
