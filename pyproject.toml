@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "codex-hot-media"
-version = "0.1.0"
+version = "0.2.0"
 description = "Codex-friendly CLI for turning public hot lists into original short-video plans and manual publish packs."
 readme = "README.md"
 requires-python = ">=3.10"

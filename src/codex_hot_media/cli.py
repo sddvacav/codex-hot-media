@@ -1089,7 +1089,7 @@ def command_doctor(_: argparse.Namespace) -> dict[str, Any]:
         "status": "ok",
         "action": "doctor",
         "tool": "codex-hot-media",
-        "version": "0.1.0",
+        "version": "0.2.0",
         "python": sys.version.split()[0],
         "auth_required": False,
         "network_used_by": ["collect", "run"],
