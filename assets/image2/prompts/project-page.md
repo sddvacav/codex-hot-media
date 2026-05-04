@@ -6,7 +6,7 @@
 - Date: 2026-05-04
 - Size: 1536x864
 - Quality: high
-- Status: prompt planned; generate with Image2 before building a public project page
+- Status: generated and stored at `assets/image2/project-page.png`
 
 ## Prompt
 
@@ -28,3 +28,9 @@ Visual style: elegant open-source launch page, product-focused but not a marketi
 - [ ] It explains the project rather than merely decorating it.
 - [ ] It conveys high quality and serious engineering.
 - [ ] It does not imply automatic publishing or account automation.
+
+## Review Notes
+
+- Generated with Image2 on 2026-05-04.
+- Intended for `docs/site/index.html`.
+- Manual review still required before release-page promotion.

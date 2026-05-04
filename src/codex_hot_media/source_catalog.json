@@ -70,6 +70,20 @@
     "notes": "Use for RSSHub routes, custom feeds, and other public RSS/Atom feeds."
   },
   {
+    "id": "autocli",
+    "kind": "optional-local-cli",
+    "project": "nashsu/AutoCLI",
+    "url": "https://github.com/nashsu/AutoCLI",
+    "notes": "Optional source-level bridge for 55+ platforms. Use collect --source autocli with read/search profiles; browser profiles reuse the user's Chrome session through AutoCLI."
+  },
+  {
+    "id": "autocli-skill",
+    "kind": "optional-agent-skill",
+    "project": "nashsu/autocli-skill",
+    "url": "https://github.com/nashsu/autocli-skill",
+    "notes": "Optional Claude Code/OpenClaw skill that routes natural-language requests to AutoCLI. codex-hot-media remains the normalization, planning, and safety layer."
+  },
+  {
     "id": "manual-text",
     "kind": "manual-import",
     "project": "NewsNow, TopHub Tech, SoPilot, Douyin, OceanEngine, Xiaohongshu, Weibo",

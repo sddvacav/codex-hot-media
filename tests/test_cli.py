@@ -33,9 +33,12 @@ class CliTests(unittest.TestCase):
         self.assertIn("codex_skill", payload["agent_integrations"])
         self.assertIn("claude_code_command", payload["agent_integrations"])
         self.assertIn("github_project_image2_workflow", payload["agent_integrations"])
+        self.assertIn("optional_autocli_bridge", payload["agent_integrations"])
         self.assertIn("ourongxing/newsnow", payload["network_projects"])
         self.assertIn("ourongxing/newsnow-mcp-server", payload["network_projects"])
         self.assertIn("TopHub Tech: https://tophub.today/c/tech", payload["network_projects"])
+        self.assertIn("nashsu/AutoCLI", payload["network_projects"])
+        self.assertIn("optional_autocli_bridge", payload)
 
     def test_sources_include_network_projects(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -48,6 +51,43 @@ class CliTests(unittest.TestCase):
         self.assertIn("NewsNow public aggregator", projects)
         self.assertIn("TopHub Tech", projects)
         self.assertIn("SoPilot Hot Tweets", projects)
+        self.assertIn("nashsu/AutoCLI", projects)
+        self.assertIn("nashsu/autocli-skill", projects)
+
+    def test_autocli_profiles_contract(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            payload = run_cli("autocli-profiles", cwd=Path(temp_dir))
+        self.assertEqual(payload["status"], "ok")
+        profiles = {item["id"]: item for item in payload["profiles"]}
+        self.assertIn("hackernews-top", profiles)
+        self.assertIn("xiaohongshu-search", profiles)
+        self.assertFalse(profiles["hackernews-top"]["write_action"])
+        self.assertTrue(profiles["xiaohongshu-search"]["query_required"])
+        self.assertTrue(profiles["twitter-post"]["write_action"])
+
+    def test_autocli_write_action_requires_explicit_flag(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "codex_hot_media",
+                    "--json",
+                    "autocli-run",
+                    "--profile",
+                    "twitter-post",
+                    "--text",
+                    "draft",
+                ],
+                cwd=Path(temp_dir),
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+        self.assertNotEqual(result.returncode, 0)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["status"], "error")
+        self.assertIn("--allow-write-action", payload["message"])
 
     def test_image2_gate_reports_blockers_without_images(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

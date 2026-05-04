@@ -2,7 +2,11 @@
 
 Codex and Claude Code friendly CLI for turning public hot lists into original short-video plans and manual publish packs.
 
+![codex-hot-media hero](assets/image2/readme-hero.png)
+
 It is designed for agent workflows: every command emits stable JSON, writes predictable files, and avoids platform login, cookies, account automation, payment links, and automatic publishing.
+
+![codex-hot-media workflow](assets/image2/workflow-overview.png)
 
 ## What It Uses
 
@@ -16,6 +20,8 @@ Current-source pass on 2026-05-04:
 - `ourongxing/newsnow-mcp-server` HEAD: `7abcdeb90bddf5d03818c9a81ab7169d1aa7f2c1`
 - `joyce677/TrendRadar` HEAD: `7b33d53f8233b4056c4e033178f70f135f2d156a`
 - `one-box-u/openclaw-daily-hot-news` HEAD: `93aa62ab874cfb8ccd6a5d662b40a0942b685027`
+- `nashsu/AutoCLI` HEAD: `c0969e2c83b29a7528452b1ba555085deca8e00d`
+- `nashsu/autocli-skill` HEAD: `d6ca200b5ba65b60cf68153e88b2e9efb7f0f441`
 
 Supported input patterns:
 
@@ -26,6 +32,8 @@ Supported input patterns:
 - Optional NewsNow MCP input for Claude Code or other MCP-capable clients.
 - Any generic JSON URL that returns hot-list-like items.
 - Any generic RSS/Atom URL.
+- Optional `nashsu/AutoCLI` bridge for 55+ platforms, including Bilibili, Zhihu, Weibo, Xiaohongshu, X/Twitter, Reddit, Douban, V2EX, Hacker News, and more.
+- Optional `nashsu/autocli-skill` for Claude Code/OpenClaw natural-language routing into AutoCLI.
 - Manual text imports from NewsNow, TopHub Tech, SoPilot, Douyin, OceanEngine, Xiaohongshu, Weibo, or browser-copied lists.
 
 ## Install
@@ -58,6 +66,7 @@ Agent integration files:
 - Claude Code memory: `CLAUDE.md`
 - Claude Code slash command: `.claude/commands/hot-media.md`
 - Shared guide: `AGENT_GUIDE.md`
+- Optional AutoCLI bridge: `docs/AUTOCLI_INTEGRATION.md`
 
 Project publishing page:
 
@@ -92,12 +101,30 @@ This creates:
 codex-hot-media --json doctor
 codex-hot-media --json sources
 codex-hot-media --json agent-guide
+codex-hot-media --json autocli-profiles
 codex-hot-media --json image2-gate
 codex-hot-media --json collect --source bilibili --pages 3 --page-size 20 --out-dir outputs/data --prefix hot_items
 codex-hot-media --json plan --input outputs/data/hot_items_latest.json --top-n 10 --out-dir outputs
 codex-hot-media --json pack --plan outputs/video_plan_from_hot_latest.json --out-dir outputs
 codex-hot-media --json dashboard --plan outputs/video_plan_from_hot_latest.json --pack outputs/publish_pack/publish_pack_latest.json --out outputs/dashboard.html
 ```
+
+AutoCLI bridge:
+
+```powershell
+# Public-mode profile. Does not need Chrome.
+codex-hot-media --json run --source autocli --autocli-profile hackernews-top --limit 10 --top-n 5 --out-dir outputs
+
+# Browser-session profiles. Require AutoCLI, Chrome, the AutoCLI Chrome extension, and your own logged-in session.
+codex-hot-media --json collect --source autocli --autocli-profile zhihu-hot --limit 10 --out-dir outputs/data --prefix zhihu_hot
+codex-hot-media --json collect --source autocli --autocli-profile weibo-hot --limit 10 --out-dir outputs/data --prefix weibo_hot
+codex-hot-media --json collect --source autocli --autocli-profile xiaohongshu-search --query AI --limit 10 --out-dir outputs/data --prefix xhs_ai
+codex-hot-media --json collect --source autocli --autocli-profile twitter-search --query "AI video tools" --limit 10 --out-dir outputs/data --prefix x_ai
+```
+
+The AutoCLI bridge is optional. If `autocli` is not installed, `doctor` and `autocli-profiles` still work and report the missing binary. Install from [nashsu/AutoCLI releases](https://github.com/nashsu/AutoCLI/releases/latest), then put `autocli.exe` on `PATH`.
+
+Write-action profiles are blocked by default. For example, `twitter-post` only runs through `autocli-run` when the user explicitly requests the action and `--allow-write-action` is present. It is not available as a `collect` source.
 
 Manual import:
 

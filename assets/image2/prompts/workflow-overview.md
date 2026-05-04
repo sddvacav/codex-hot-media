@@ -6,7 +6,7 @@
 - Date: 2026-05-04
 - Size: 1536x1024
 - Quality: high
-- Status: prompt planned; generate with Image2 before claiming Image2 gate complete
+- Status: generated and stored at `assets/image2/workflow-overview.png`
 
 ## Prompt
 
@@ -29,3 +29,9 @@ Design style: world-class technical documentation graphic, clean spacing, readab
 - [ ] Codex and Claude Code are both present.
 - [ ] Manual review boundary is explicit.
 - [ ] The graphic supports documentation rather than decoration.
+
+## Review Notes
+
+- Generated with Image2 on 2026-05-04.
+- Updated project source set includes AutoCLI as an optional bridge.
+- Manual review still required before using it as the only architecture diagram.

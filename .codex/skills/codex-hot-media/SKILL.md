@@ -15,6 +15,7 @@ Verify the command:
 codex-hot-media --json doctor
 codex-hot-media --json sources
 codex-hot-media --json agent-guide
+codex-hot-media --json autocli-profiles
 codex-hot-media --json image2-gate
 ```
 
@@ -62,6 +63,21 @@ Self-hosted DailyHotApi or RSSHub:
 codex-hot-media --json collect --source dailyhot --base-url http://127.0.0.1:6688 --route bilibili --out-dir outputs/data --prefix dailyhot_bilibili
 codex-hot-media --json collect --source rss --base-url http://127.0.0.1:1200 --route bilibili/popular/all --out-dir outputs/data --prefix rsshub_bilibili
 ```
+
+Optional AutoCLI bridge for 55+ platforms:
+
+```powershell
+codex-hot-media --json autocli-profiles
+codex-hot-media --json run --source autocli --autocli-profile hackernews-top --limit 10 --top-n 5 --out-dir outputs
+codex-hot-media --json collect --source autocli --autocli-profile zhihu-hot --limit 10 --out-dir outputs/data --prefix zhihu_hot
+codex-hot-media --json collect --source autocli --autocli-profile weibo-hot --limit 10 --out-dir outputs/data --prefix weibo_hot
+codex-hot-media --json collect --source autocli --autocli-profile xiaohongshu-search --query AI --limit 10 --out-dir outputs/data --prefix xhs_ai
+codex-hot-media --json collect --source autocli --autocli-profile twitter-search --query "AI video tools" --limit 10 --out-dir outputs/data --prefix x_ai
+```
+
+AutoCLI is optional. Browser profiles require AutoCLI, Chrome, the AutoCLI Chrome extension, and the user's own existing login session. Do not request, print, store, or pass cookies, tokens, or account credentials. Write profiles such as `twitter-post` require explicit user intent plus `autocli-run --allow-write-action` and are not collection sources.
+
+Full bridge contract: `docs/AUTOCLI_INTEGRATION.md`.
 
 ## Output Files
 

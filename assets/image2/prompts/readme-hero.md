@@ -6,7 +6,7 @@
 - Date: 2026-05-04
 - Size: 1536x864
 - Quality: high
-- Status: prompt planned; generate with Image2 before claiming Image2 gate complete
+- Status: generated and stored at `assets/image2/readme-hero.png`
 
 ## Prompt
 
@@ -26,3 +26,9 @@ Text constraints: if text is included, keep it short and legible: "codex-hot-med
 - [ ] Safety boundary is visible.
 - [ ] No false claim of auto-publishing.
 - [ ] Image is suitable for README first viewport.
+
+## Review Notes
+
+- Generated with Image2 on 2026-05-04.
+- Intended for README first viewport and project publishing page.
+- Manual review still required before using it as a final social preview.

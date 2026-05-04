@@ -13,6 +13,7 @@ First inspect the tool contract:
 ```bash
 codex-hot-media --json doctor
 codex-hot-media --json agent-guide
+codex-hot-media --json autocli-profiles
 ```
 
 User arguments: `$ARGUMENTS`
@@ -44,6 +45,18 @@ codex-hot-media --json collect --source dailyhot --base-url http://127.0.0.1:668
 ```bash
 codex-hot-media --json collect --source rss --base-url http://127.0.0.1:1200 --route bilibili/popular/all --out-dir outputs/data --prefix rsshub_bilibili
 ```
+
+- For optional AutoCLI platform bridge:
+
+```bash
+codex-hot-media --json autocli-profiles
+codex-hot-media --json run --source autocli --autocli-profile hackernews-top --limit 10 --top-n 5 --out-dir outputs
+codex-hot-media --json collect --source autocli --autocli-profile zhihu-hot --limit 10 --out-dir outputs/data --prefix zhihu_hot
+codex-hot-media --json collect --source autocli --autocli-profile weibo-hot --limit 10 --out-dir outputs/data --prefix weibo_hot
+codex-hot-media --json collect --source autocli --autocli-profile xiaohongshu-search --query AI --limit 10 --out-dir outputs/data --prefix xhs_ai
+```
+
+AutoCLI browser profiles reuse the user's own Chrome session through AutoCLI. Never request, print, store, or pass cookies, tokens, or credentials. Write profiles require explicit user intent and `autocli-run --allow-write-action`.
 
 - For the daily 5-minute manual workflow, open:
 

@@ -5,6 +5,8 @@ import csv
 import datetime as dt
 import json
 import re
+import shutil
+import subprocess
 import sys
 import urllib.error
 import urllib.parse
@@ -20,6 +22,96 @@ USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 )
+
+AUTOCLI_CHECKED_ON = "2026-05-04"
+AUTOCLI_UPSTREAM_REFS = {
+    "nashsu/AutoCLI_head": "c0969e2c83b29a7528452b1ba555085deca8e00d",
+    "nashsu/autocli-skill_head": "d6ca200b5ba65b60cf68153e88b2e9efb7f0f441",
+}
+
+AUTOCLI_PROFILES: dict[str, dict[str, Any]] = {
+    "hackernews-top": {
+        "site": "hackernews",
+        "command": "top",
+        "mode": "public",
+        "argv": ["hackernews", "top", "--limit", "{limit}", "--format", "json"],
+        "description": "Hacker News top stories through AutoCLI public mode.",
+    },
+    "bilibili-hot": {
+        "site": "bilibili",
+        "command": "hot",
+        "mode": "browser",
+        "argv": ["bilibili", "hot", "--limit", "{limit}", "--format", "json"],
+        "description": "Bilibili hot videos through AutoCLI Chrome-session mode.",
+    },
+    "zhihu-hot": {
+        "site": "zhihu",
+        "command": "hot",
+        "mode": "browser",
+        "argv": ["zhihu", "hot", "--limit", "{limit}", "--format", "json"],
+        "description": "Zhihu hot list through AutoCLI Chrome-session mode.",
+    },
+    "weibo-hot": {
+        "site": "weibo",
+        "command": "hot",
+        "mode": "browser",
+        "argv": ["weibo", "hot", "--limit", "{limit}", "--format", "json"],
+        "description": "Weibo hot search through AutoCLI Chrome-session mode.",
+    },
+    "twitter-trending": {
+        "site": "twitter",
+        "command": "trending",
+        "mode": "browser",
+        "argv": ["twitter", "trending", "--limit", "{limit}", "--format", "json"],
+        "description": "X/Twitter trending topics through AutoCLI Chrome-session mode.",
+    },
+    "twitter-search": {
+        "site": "twitter",
+        "command": "search",
+        "mode": "browser",
+        "query_required": True,
+        "argv": ["twitter", "search", "{query}", "--limit", "{limit}", "--format", "json"],
+        "description": "Search X/Twitter posts through AutoCLI Chrome-session mode.",
+    },
+    "xiaohongshu-search": {
+        "site": "xiaohongshu",
+        "command": "search",
+        "mode": "browser",
+        "query_required": True,
+        "argv": ["xiaohongshu", "search", "{query}", "--limit", "{limit}", "--format", "json"],
+        "description": "Search Xiaohongshu notes through AutoCLI Chrome-session mode.",
+    },
+    "reddit-hot": {
+        "site": "reddit",
+        "command": "hot",
+        "mode": "browser",
+        "argv": ["reddit", "hot", "--limit", "{limit}", "--format", "json"],
+        "description": "Reddit hot posts through AutoCLI browser/public-capable adapter.",
+    },
+    "douban-movie-hot": {
+        "site": "douban",
+        "command": "movie-hot",
+        "mode": "browser",
+        "argv": ["douban", "movie-hot", "--limit", "{limit}", "--format", "json"],
+        "description": "Douban movie hot list through AutoCLI Chrome-session mode.",
+    },
+    "v2ex-hot": {
+        "site": "v2ex",
+        "command": "hot",
+        "mode": "public_or_browser",
+        "argv": ["v2ex", "hot", "--limit", "{limit}", "--format", "json"],
+        "description": "V2EX hot topics through AutoCLI public/browser adapter.",
+    },
+    "twitter-post": {
+        "site": "twitter",
+        "command": "post",
+        "mode": "browser",
+        "write_action": True,
+        "text_required": True,
+        "argv": ["twitter", "post", "--text", "{text}"],
+        "description": "Post to X/Twitter through AutoCLI. Requires explicit --allow-write-action.",
+    },
+}
 
 
 @dataclass
@@ -282,6 +374,207 @@ def text_from_child(node: ET.Element, tag: str) -> str:
     if child is None or child.text is None:
         return ""
     return child.text.strip()
+
+
+def autocli_binary() -> str | None:
+    return shutil.which("autocli") or shutil.which("autocli.exe")
+
+
+def autocli_available() -> bool:
+    return autocli_binary() is not None
+
+
+def build_autocli_profile_command(profile: str, limit: int, query: str = "", text: str = "") -> list[str]:
+    spec = AUTOCLI_PROFILES.get(profile)
+    if not spec:
+        raise ValueError(f"Unsupported AutoCLI profile: {profile}")
+    if spec.get("query_required") and not query:
+        raise ValueError(f"--query is required for AutoCLI profile {profile}")
+    if spec.get("text_required") and not text:
+        raise ValueError(f"--text is required for AutoCLI profile {profile}")
+    values = {
+        "limit": str(limit),
+        "query": query,
+        "text": text,
+    }
+    return [str(part).format(**values) for part in spec["argv"]]
+
+
+def run_autocli_json(profile: str, limit: int, query: str, timeout: int) -> Any:
+    binary = autocli_binary()
+    if not binary:
+        raise RuntimeError("AutoCLI executable not found. Install nashsu/AutoCLI and ensure autocli is on PATH.")
+    argv = [binary, *build_autocli_profile_command(profile, limit=limit, query=query)]
+    try:
+        completed = subprocess.run(
+            argv,
+            text=True,
+            capture_output=True,
+            timeout=timeout,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError(f"AutoCLI command timed out after {timeout}s: {profile}") from exc
+    if completed.returncode != 0:
+        stderr = completed.stderr.strip() or completed.stdout.strip()
+        raise RuntimeError(f"AutoCLI command failed for {profile}: {stderr}")
+    return parse_autocli_stdout(completed.stdout)
+
+
+def parse_autocli_stdout(stdout: str) -> Any:
+    text = stdout.strip()
+    if not text:
+        return []
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+    start = min([index for index in (text.find("["), text.find("{")) if index >= 0], default=-1)
+    if start >= 0:
+        snippet = text[start:]
+        try:
+            return json.loads(snippet)
+        except json.JSONDecodeError:
+            pass
+    return parse_autocli_table_or_text(text)
+
+
+def parse_autocli_table_or_text(text: str) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    headers: list[str] = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.startswith("|") and stripped.endswith("|"):
+            cells = [cell.strip() for cell in stripped.strip("|").split("|")]
+            if all(re.fullmatch(r":?-{3,}:?", cell) for cell in cells):
+                continue
+            if not headers:
+                headers = [normalize_field_name(cell) for cell in cells]
+                continue
+            row = {headers[index] if index < len(headers) else f"field_{index + 1}": cell for index, cell in enumerate(cells)}
+            rows.append(row)
+        else:
+            rows.append({"title": stripped})
+    return rows
+
+
+def normalize_field_name(value: str) -> str:
+    cleaned = re.sub(r"[^0-9A-Za-z_]+", "_", value.strip().lower()).strip("_")
+    return cleaned or "field"
+
+
+def normalize_autocli_payload(payload: Any, source: str) -> list[HotItem]:
+    candidates = flatten_json_candidates(payload)
+    if isinstance(payload, dict) and not candidates:
+        candidates = [payload]
+    items: list[HotItem] = []
+    for index, candidate in enumerate(candidates, start=1):
+        normalized = normalize_autocli_item(candidate, source=source, rank=index)
+        if normalized:
+            items.append(normalized)
+    return items
+
+
+def normalize_autocli_item(item: Any, source: str, rank: int) -> HotItem | None:
+    if not isinstance(item, dict):
+        if isinstance(item, str) and item.strip():
+            return HotItem(source=source, title=item.strip(), engagement_score=max(1, 100 - rank))
+        return None
+    title = first_text(
+        item,
+        [
+            "title",
+            "topic",
+            "word",
+            "text",
+            "name",
+            "query",
+            "summary",
+            "description",
+            "content",
+        ],
+    )
+    if not title:
+        return None
+    url = first_text(item, ["url", "link", "href", "permalink"])
+    category = first_text(item, ["category", "subreddit", "type", "label", "tag", "source"])
+    author = first_text(item, ["author", "user", "screen_name", "owner", "by"])
+    raw_score = first_number(
+        item,
+        [
+            "hot_value",
+            "heat",
+            "score",
+            "play",
+            "views",
+            "view",
+            "likes",
+            "like",
+            "tweets",
+            "comments",
+            "rank",
+        ],
+    )
+    engagement = raw_score if raw_score else max(1, 100 - rank)
+    return HotItem(
+        source=source,
+        title=title,
+        url=url,
+        category=category,
+        author=author,
+        raw_score=float(raw_score or 0),
+        engagement_score=round(float(engagement), 2),
+    )
+
+
+def collect_autocli(profile: str, limit: int, query: str, timeout: int, source_name: str) -> list[HotItem]:
+    spec = AUTOCLI_PROFILES.get(profile)
+    if not spec:
+        raise ValueError(f"Unsupported AutoCLI profile: {profile}")
+    if spec.get("write_action"):
+        raise ValueError(f"AutoCLI profile {profile} is a write action and cannot be used as a collect source.")
+    payload = run_autocli_json(profile=profile, limit=limit, query=query, timeout=timeout)
+    return normalize_autocli_payload(payload, source=source_name or f"autocli:{profile}")
+
+
+def run_autocli_action(args: argparse.Namespace) -> dict[str, Any]:
+    spec = AUTOCLI_PROFILES.get(args.profile)
+    if not spec:
+        raise ValueError(f"Unsupported AutoCLI profile: {args.profile}")
+    if spec.get("write_action") and not args.allow_write_action:
+        raise ValueError("This AutoCLI profile performs a write action. Re-run with --allow-write-action after manual review.")
+    binary = autocli_binary()
+    if not binary:
+        raise RuntimeError("AutoCLI executable not found. Install nashsu/AutoCLI and ensure autocli is on PATH.")
+    argv = [
+        binary,
+        *build_autocli_profile_command(args.profile, limit=args.limit, query=args.query or "", text=args.text or ""),
+    ]
+    try:
+        completed = subprocess.run(
+            argv,
+            text=True,
+            capture_output=True,
+            timeout=args.timeout,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError(f"AutoCLI command timed out after {args.timeout}s: {args.profile}") from exc
+    payload = {
+        "status": "ok" if completed.returncode == 0 else "error",
+        "action": "autocli-run",
+        "profile": args.profile,
+        "mode": spec.get("mode"),
+        "returncode": completed.returncode,
+        "stdout": completed.stdout.strip(),
+        "stderr": completed.stderr.strip(),
+        "write_action": bool(spec.get("write_action")),
+    }
+    if completed.returncode != 0:
+        payload["safe_retry"] = "Run codex-hot-media --json autocli-profiles and autocli doctor to inspect AutoCLI setup."
+    return payload
 
 
 def parse_manual_text(text: str, source: str) -> list[HotItem]:
@@ -725,15 +1018,19 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("doctor", help="Check local CLI setup and safe operating boundaries.")
     sub.add_parser("sources", help="List supported upstream/source patterns.")
     sub.add_parser("agent-guide", help="Emit operating instructions for Codex and Claude Code agents.")
+    sub.add_parser("autocli-profiles", help="List optional nashsu/AutoCLI bridge profiles.")
     image2_gate = sub.add_parser("image2-gate", help="Check the Image2-first GitHub project construction gate.")
     image2_gate.add_argument("--project-root", default=".", help="Repository root to inspect.")
 
     collect = sub.add_parser("collect", help="Collect hot items from public or self-hosted sources.")
-    collect.add_argument("--source", choices=["bilibili", "json-url", "dailyhot", "rss"], default="bilibili")
+    collect.add_argument("--source", choices=["bilibili", "json-url", "dailyhot", "rss", "autocli"], default="bilibili")
     collect.add_argument("--url", help="URL for json-url or rss source.")
     collect.add_argument("--base-url", help="DailyHotApi or RSSHub base URL.")
     collect.add_argument("--route", help="DailyHotApi route path.")
     collect.add_argument("--source-name", default="", help="Source label stored in output items.")
+    collect.add_argument("--autocli-profile", default="hackernews-top", help="AutoCLI profile for --source autocli.")
+    collect.add_argument("--query", default="", help="Search query for query-based AutoCLI profiles.")
+    collect.add_argument("--limit", type=int, default=20, help="Item limit for AutoCLI profiles.")
     collect.add_argument("--pages", type=int, default=3)
     collect.add_argument("--page-size", type=int, default=20)
     collect.add_argument("--timeout", type=int, default=20)
@@ -760,12 +1057,23 @@ def build_parser() -> argparse.ArgumentParser:
     dashboard.add_argument("--pack", required=True)
     dashboard.add_argument("--out", default="dashboard.html")
 
+    autocli_run = sub.add_parser("autocli-run", help="Run an optional AutoCLI bridge profile directly.")
+    autocli_run.add_argument("--profile", required=True, choices=sorted(AUTOCLI_PROFILES))
+    autocli_run.add_argument("--query", default="")
+    autocli_run.add_argument("--text", default="")
+    autocli_run.add_argument("--limit", type=int, default=20)
+    autocli_run.add_argument("--timeout", type=int, default=60)
+    autocli_run.add_argument("--allow-write-action", action="store_true")
+
     run = sub.add_parser("run", help="Run collect, plan, pack, and dashboard in one command.")
-    run.add_argument("--source", choices=["bilibili", "json-url", "dailyhot", "rss"], default="bilibili")
+    run.add_argument("--source", choices=["bilibili", "json-url", "dailyhot", "rss", "autocli"], default="bilibili")
     run.add_argument("--url")
     run.add_argument("--base-url")
     run.add_argument("--route")
     run.add_argument("--source-name", default="")
+    run.add_argument("--autocli-profile", default="hackernews-top")
+    run.add_argument("--query", default="")
+    run.add_argument("--limit", type=int, default=20)
     run.add_argument("--pages", type=int, default=3)
     run.add_argument("--page-size", type=int, default=20)
     run.add_argument("--timeout", type=int, default=20)
@@ -776,6 +1084,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def command_doctor(_: argparse.Namespace) -> dict[str, Any]:
+    binary = autocli_binary()
     return {
         "status": "ok",
         "action": "doctor",
@@ -787,6 +1096,14 @@ def command_doctor(_: argparse.Namespace) -> dict[str, Any]:
         "write_scope": "Only the selected --out-dir and requested dashboard output path.",
         "manual_only": ["platform login", "account authorization", "payment links", "final publishing"],
         "safe_default": "Read public/self-hosted feeds and generate drafts only.",
+        "optional_autocli_bridge": {
+            "available": binary is not None,
+            "binary": binary or "",
+            "source": "nashsu/AutoCLI",
+            "checked_on": AUTOCLI_CHECKED_ON,
+            "default_boundary": "Read/search profiles can feed this pipeline. Write profiles require --allow-write-action and manual review.",
+            "requires_for_browser_profiles": ["Chrome open", "AutoCLI Chrome extension installed", "user already logged in to target platform"],
+        },
     }
 
 
@@ -805,6 +1122,7 @@ def command_sources(_: argparse.Namespace) -> dict[str, Any]:
             "ourongxing/newsnow-mcp-server_head": "7abcdeb90bddf5d03818c9a81ab7169d1aa7f2c1",
             "joyce677/TrendRadar_head": "7b33d53f8233b4056c4e033178f70f135f2d156a",
             "one-box-u/openclaw-daily-hot-news_head": "93aa62ab874cfb8ccd6a5d662b40a0942b685027",
+            **AUTOCLI_UPSTREAM_REFS,
         },
     }
 
@@ -829,6 +1147,8 @@ def command_agent_guide(_: argparse.Namespace) -> dict[str, Any]:
             "dailyhotapi": "codex-hot-media --json collect --source dailyhot --base-url http://127.0.0.1:6688 --route bilibili --out-dir outputs/data --prefix dailyhot_bilibili",
             "rsshub": "codex-hot-media --json collect --source rss --base-url http://127.0.0.1:1200 --route bilibili/popular/all --out-dir outputs/data --prefix rsshub_bilibili",
             "newsnow_or_trendradar_json": "codex-hot-media --json collect --source json-url --url http://127.0.0.1:3000/api/hot --source-name newsnow --out-dir outputs/data --prefix newsnow_hot",
+            "autocli_public_hackernews": "codex-hot-media --json run --source autocli --autocli-profile hackernews-top --limit 10 --top-n 5 --out-dir outputs",
+            "autocli_browser_search": "codex-hot-media --json collect --source autocli --autocli-profile xiaohongshu-search --query AI --limit 10 --out-dir outputs/data --prefix xhs_ai",
             "daily_5min_manual_sites": [
                 "Open https://newsnow.busiyi.world for multi-platform hotspots.",
                 "Open https://tophub.today/c/tech for GitHub Trending, Product Hunt, Hacker News, product and tech hotspots.",
@@ -851,13 +1171,32 @@ def command_agent_guide(_: argparse.Namespace) -> dict[str, Any]:
             "Do not automate login, upload, or final publishing.",
             "Do not copy source footage or exact creator titles.",
             "Do not create payment links or manage accounts from this CLI.",
+            "Do not run AutoCLI write profiles unless the user explicitly requests the action and --allow-write-action is present.",
         ],
         "agent_integrations": {
             "codex_skill": ".codex/skills/codex-hot-media/SKILL.md",
             "claude_code_memory": "CLAUDE.md",
             "claude_code_command": ".claude/commands/hot-media.md",
             "optional_mcp_notes": "docs/MCP_INTEGRATION.md",
+            "optional_autocli_bridge": "docs/AUTOCLI_INTEGRATION.md",
             "github_project_image2_workflow": "docs/GITHUB_RELEASE_IMAGE2_WORKFLOW.md",
+        },
+        "optional_autocli_bridge": {
+            "profiles_command": "codex-hot-media --json autocli-profiles",
+            "collect_source": "codex-hot-media --json collect --source autocli --autocli-profile <profile>",
+            "safe_default_profiles": [
+                "hackernews-top",
+                "bilibili-hot",
+                "zhihu-hot",
+                "weibo-hot",
+                "twitter-trending",
+                "twitter-search",
+                "xiaohongshu-search",
+                "reddit-hot",
+                "douban-movie-hot",
+                "v2ex-hot",
+            ],
+            "write_profiles": ["twitter-post"],
         },
         "network_projects": [
             "imsyy/DailyHotApi",
@@ -868,10 +1207,43 @@ def command_agent_guide(_: argparse.Namespace) -> dict[str, Any]:
             "ourongxing/newsnow-mcp-server",
             "joyce677/TrendRadar",
             "one-box-u/openclaw-daily-hot-news",
+            "nashsu/AutoCLI",
+            "nashsu/autocli-skill",
             "NewsNow public aggregator: https://newsnow.busiyi.world",
             "TopHub Tech: https://tophub.today/c/tech",
             "SoPilot Hot Tweets: https://sopilot.net/zh/hot-tweets",
         ],
+    }
+
+
+def command_autocli_profiles(_: argparse.Namespace) -> dict[str, Any]:
+    binary = autocli_binary()
+    return {
+        "status": "ok",
+        "action": "autocli-profiles",
+        "checked_on": AUTOCLI_CHECKED_ON,
+        "available": binary is not None,
+        "binary": binary or "",
+        "upstream_refs": AUTOCLI_UPSTREAM_REFS,
+        "install": {
+            "windows": "Download autocli-x86_64-pc-windows-msvc.zip from https://github.com/nashsu/AutoCLI/releases/latest and put autocli.exe on PATH.",
+            "skill": "Optional: install https://github.com/nashsu/autocli-skill for Claude Code/OpenClaw natural-language routing.",
+        },
+        "profiles": [
+            {
+                "id": profile_id,
+                "site": spec["site"],
+                "command": spec["command"],
+                "mode": spec["mode"],
+                "write_action": bool(spec.get("write_action")),
+                "query_required": bool(spec.get("query_required")),
+                "text_required": bool(spec.get("text_required")),
+                "argv": spec["argv"],
+                "description": spec["description"],
+            }
+            for profile_id, spec in sorted(AUTOCLI_PROFILES.items())
+        ],
+        "safe_boundary": "Read/search profiles normalize into HotItem outputs. Browser profiles reuse the user's own Chrome session through AutoCLI. Write profiles are blocked unless --allow-write-action is explicitly supplied.",
     }
 
 
@@ -893,6 +1265,14 @@ def collect_from_args(args: argparse.Namespace) -> list[HotItem]:
         if not url:
             raise ValueError("--url or --base-url plus --route is required for rss")
         return collect_rss(url, args.source_name or "rss", args.timeout)
+    if args.source == "autocli":
+        return collect_autocli(
+            profile=args.autocli_profile,
+            limit=args.limit,
+            query=args.query,
+            timeout=args.timeout,
+            source_name=args.source_name,
+        )
     raise ValueError(f"Unsupported source: {args.source}")
 
 
@@ -1018,6 +1398,8 @@ def main(argv: list[str] | None = None) -> None:
             result = command_sources(args)
         elif args.command == "agent-guide":
             result = command_agent_guide(args)
+        elif args.command == "autocli-profiles":
+            result = command_autocli_profiles(args)
         elif args.command == "image2-gate":
             result = command_image2_gate(args)
         elif args.command == "collect":
@@ -1030,6 +1412,8 @@ def main(argv: list[str] | None = None) -> None:
             result = command_pack(args)
         elif args.command == "dashboard":
             result = command_dashboard(args)
+        elif args.command == "autocli-run":
+            result = run_autocli_action(args)
         elif args.command == "run":
             result = command_run(args)
         else:

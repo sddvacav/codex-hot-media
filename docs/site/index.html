@@ -13,6 +13,7 @@
       --line: #d9e0ea;
       --blue: #2563eb;
       --green: #0f9f6e;
+      --red: #c2410c;
     }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: Arial, "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--ink); }
@@ -24,8 +25,7 @@
     code { background: #eef4ff; color: #1d4ed8; padding: 2px 5px; border-radius: 5px; }
     .hero { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 18px; align-items: center; }
     .hero-visual, section { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; }
-    .hero-visual img { width: 100%; border-radius: 8px; border: 1px solid var(--line); background: #f1f5f9; }
-    .placeholder { min-height: 280px; display: grid; place-items: center; text-align: center; color: var(--muted); background: #f1f5f9; border: 1px dashed #9aa8bd; border-radius: 8px; padding: 20px; }
+    .hero-visual img, .wide-visual img { width: 100%; border-radius: 8px; border: 1px solid var(--line); background: #f1f5f9; display: block; }
     .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
     .card { border: 1px solid var(--line); border-radius: 8px; padding: 14px; background: #fbfcfe; }
     .card strong { display: block; margin-bottom: 7px; }
@@ -45,20 +45,22 @@
     <div class="hero">
       <section>
         <h2>What It Means</h2>
-        <p>codex-hot-media turns public and self-hosted hot-list signals into local planning artifacts: JSON reports, video plans, manual publish packs, CSV review logs, and dashboards. It keeps account login, upload, and final publishing manual.</p>
+        <p>codex-hot-media turns public, self-hosted, manual, MCP, and optional AutoCLI hot-list signals into local planning artifacts: JSON reports, video plans, manual publish packs, CSV review logs, and dashboards. It keeps account login, upload, and final publishing manual.</p>
       </section>
       <div class="hero-visual">
-        <div class="placeholder">
-          Generate <code>assets/image2/readme-hero.png</code> with Image2 before claiming the Image2 project gate is complete.
-        </div>
+        <img src="../../assets/image2/project-page.png" alt="codex-hot-media project page visual">
       </div>
     </div>
+    <section class="wide-visual">
+      <h2>Workflow</h2>
+      <img src="../../assets/image2/workflow-overview.png" alt="codex-hot-media workflow overview">
+    </section>
     <section>
       <h2>Agent Paths</h2>
       <div class="grid">
         <div class="card"><strong>Codex</strong><p>Uses the repository skill and <code>codex-hot-media --json agent-guide</code>.</p></div>
         <div class="card"><strong>Claude Code</strong><p>Uses <code>CLAUDE.md</code> and <code>.claude/commands/hot-media.md</code>.</p></div>
-        <div class="card"><strong>Optional MCP</strong><p>NewsNow MCP can feed inputs, while the CLI remains the normalization and planning layer.</p></div>
+        <div class="card"><strong>Optional Bridges</strong><p>NewsNow MCP and AutoCLI can feed inputs, while the CLI remains the normalization, planning, and safety layer.</p></div>
       </div>
     </section>
     <section>
@@ -71,17 +73,30 @@
       <span class="tag">SoPilot</span>
       <span class="tag">TrendRadar</span>
       <span class="tag">OpenClaw</span>
+      <span class="tag">AutoCLI</span>
+      <span class="tag">Zhihu</span>
+      <span class="tag">Weibo</span>
+      <span class="tag">Xiaohongshu</span>
+      <span class="tag">X/Twitter</span>
+    </section>
+    <section>
+      <h2>AutoCLI Bridge</h2>
+      <p>AutoCLI support is optional and source-level. Read and search profiles can flow into the same planning pipeline. Browser-session profiles require the user's own Chrome session through AutoCLI; write profiles are blocked unless explicit review enables them.</p>
+      <div class="commands">codex-hot-media --json autocli-profiles
+codex-hot-media --json collect --source autocli --autocli-profile zhihu-hot --limit 10 --out-dir outputs/data --prefix zhihu_hot
+codex-hot-media --json collect --source autocli --autocli-profile xiaohongshu-search --query AI --limit 10 --out-dir outputs/data --prefix xhs_ai</div>
     </section>
     <section>
       <h2>Install And Verify</h2>
       <div class="commands">python -m pip install git+https://github.com/sddvacav/codex-hot-media.git
 codex-hot-media --json doctor
 codex-hot-media --json agent-guide
+codex-hot-media --json autocli-profiles
 codex-hot-media --json image2-gate</div>
     </section>
     <section>
       <h2>Image2 Gate</h2>
-      <p>This page is part of the GitHub project construction workflow. The project is not visually release-ready until Image2 assets exist under <code>assets/image2/</code> and their prompts are recorded under <code>assets/image2/prompts/</code>.</p>
+      <p>This page is part of the GitHub project construction workflow. Image2 assets live under <code>assets/image2/</code> and prompt records live under <code>assets/image2/prompts/</code>.</p>
     </section>
   </main>
 </body>

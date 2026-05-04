@@ -9,6 +9,7 @@ Every agent should start with:
 ```bash
 codex-hot-media --json doctor
 codex-hot-media --json agent-guide
+codex-hot-media --json autocli-profiles
 ```
 
 The JSON output gives the safe command recipes, output paths, and forbidden actions.
@@ -54,9 +55,37 @@ The tool is designed to compose with:
 - `ourongxing/newsnow-mcp-server` as an optional MCP input for Claude Code or other MCP-capable clients,
 - `joyce677/TrendRadar` for multi-platform trend monitoring,
 - `one-box-u/openclaw-daily-hot-news` for self-hosted daily hot news JSON inputs,
+- `nashsu/AutoCLI` as an optional local CLI bridge for 55+ public/browser-session platforms,
+- `nashsu/autocli-skill` as an optional Claude Code/OpenClaw natural-language layer over AutoCLI,
 - NewsNow public page: `https://newsnow.busiyi.world`,
 - TopHub Tech: `https://tophub.today/c/tech`,
 - SoPilot hot tweets: `https://sopilot.net/zh/hot-tweets`.
+
+## Optional AutoCLI Bridge
+
+Use AutoCLI when the user asks for platforms that ordinary public feeds cannot reach, such as Zhihu hot topics, Weibo hot search, Xiaohongshu search, X/Twitter search/trending, Reddit, Douban, or V2EX.
+
+Start with:
+
+```bash
+codex-hot-media --json autocli-profiles
+```
+
+See `docs/AUTOCLI_INTEGRATION.md` for the source-level bridge contract.
+
+Safe read/search examples:
+
+```bash
+codex-hot-media --json run --source autocli --autocli-profile hackernews-top --limit 10 --top-n 5 --out-dir outputs
+codex-hot-media --json collect --source autocli --autocli-profile zhihu-hot --limit 10 --out-dir outputs/data --prefix zhihu_hot
+codex-hot-media --json collect --source autocli --autocli-profile weibo-hot --limit 10 --out-dir outputs/data --prefix weibo_hot
+codex-hot-media --json collect --source autocli --autocli-profile xiaohongshu-search --query AI --limit 10 --out-dir outputs/data --prefix xhs_ai
+codex-hot-media --json collect --source autocli --autocli-profile twitter-search --query "AI video tools" --limit 10 --out-dir outputs/data --prefix x_ai
+```
+
+Browser profiles require AutoCLI, Chrome, the AutoCLI Chrome extension, and the user's existing login session. Do not collect or store cookies, tokens, or account credentials.
+
+Write profiles such as `twitter-post` are not collection sources. They may only be run with `autocli-run --allow-write-action` after the user explicitly asks for the action and the content has been manually reviewed.
 
 ## Daily 5-Minute Manual Hot Workflow
 
